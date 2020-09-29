@@ -86,13 +86,42 @@ function viewRoles(){
 //works//
 function updateRoles(){
   console.log("updating role")
-  connection.query("SELECT allEmployee.first_name, allEmployee.last_name, allEmployee.department_name, employe_role.title FROM allEmployee INNER JOIN employe_role ON allEmployee.id=employe_role.id ORDER BY employe_role.title" ,
+  connection.query("SELECT allEmployee.first_name, allEmployee.last_name, allEmployee.department_name, employe_role.title, allEmployee.id FROM allEmployee INNER JOIN employe_role ON allEmployee.id=employe_role.id ORDER BY employe_role.title",
     (err,data)=>{
     if(err)console.error(err)
     //console.log(data)
     console.table(data)
-    onceMore()
+    const formattedNames= data.map(personob=>`${personob.first_name} ${personob.last_name}`)
+    connection.query ("SELECT * FROM employe_role", (err2,data2)=>{
+      console.table(data2)
+      const roles= data2.map(x=>x.title)
+        inquirer.prompt([{
+          name: "whom",
+          type: "list",
+          message: "which one you want to update?",
+          choices: formattedNames
+          
+        },{
+          name: "where",
+          type: "list",
+          message: "which job they do?",
+          choices: roles
 
+        }]).then( answer=>{
+          const newJob= data2.find(testOb=>testOb.title == anser.where)
+          const employee= data.find(testOb=>`${testOb.first_name} ${testOb.last_name}` == answer.whom)
+          const newJobId= newJob.id
+          const employeeId = employee.id
+         connection.query ("UPdate employee Set role_id = ? WHERE id = ?", [newJobId, employeeId], (err3,data3)=>{
+
+           if(err3)console.error(err3)
+          // console.log(data3)
+         
+         onceMore()
+         })
+                                                        
+      })
+    })
 })}
 
 
