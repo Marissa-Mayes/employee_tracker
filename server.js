@@ -29,7 +29,7 @@ function start() {
         name: "action",
         type: "list",
         message: "what would you like to do?",
-        choices: ["View all roles","Update employee roles","View all departments", "view all employees", "Add employees"]
+        choices: ["View all roles","Update employee roles","View all departments", "view all employees", "Add employees", "Add department"]
       }).then(answers=>{
         switch (answers.action) {
           case "View all roles":
@@ -54,6 +54,9 @@ function start() {
 
                         case "view all employees":
                         return viewEmployees()
+                        break;
+                        case "Add department":
+                        return addDepart()
                         break;
           
     
@@ -132,6 +135,36 @@ function start() {
                     console.table(answer)
                    onceMore()
             })}
+
+
+            function addDepart() {
+              console.log("adding employee")
+              inquirer
+              .prompt([
+                  
+                  {
+                      name: "name",
+                      type: "input",
+                      message: "What is the department Name"
+                  }, 
+                 
+                  
+              ])
+              .then(function(answer) {
+                connection.query(
+                    "INSERT INTO department SET ?",
+                    {
+                        name: answer.name,
+                       
+                    }),
+                    console.table(answer)
+                   onceMore()
+            })}
+
+
+
+
+
 
 
 
